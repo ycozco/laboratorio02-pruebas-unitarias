@@ -241,46 +241,6 @@ Tests run: 23,  Failures: 1
 
 ---
 
-### Detalle de casos de prueba Python
-
-#### Rectángulo
-| Caso | base  | altura | Salida esperada | Resultado test |
-|------|-------|--------|-----------------|---------------|
-| 1    | 5     | 3      | 15              | OK            |
-| 2    | 2.5   | 4      | 10              | OK            |
-| 3    | 0     | 10     | 0               | OK            |
-| 4    | -1    | 5      | Excepción       | OK            |
-| 5    | 5     | -1     | Excepción       | OK            |
-| 6    | -2    | -2     | Excepción       | OK            |
-
-#### ParImpar
-| Caso | n   | Salida esperada | Resultado test |
-|------|-----|-----------------|---------------|
-| 1    | 2   | True            | OK            |
-| 2    | 0   | True            | OK            |
-| 3    | 3   | False           | OK            |
-| 4    | -1  | False           | OK            |
-
-#### Cajero Automático
-| Caso | Acción                | Saldo inicial | Monto | Saldo esperado / Excepción         | Resultado test |
-|------|-----------------------|---------------|-------|-------------------------------------|---------------|
-| 1    | consultar_saldo       | 1000          | -     | 1000                                | OK            |
-| 2    | saldo_inicial_negativo| -100          | -     | Excepción                           | OK            |
-| 3    | depositar             | 100           | 50    | 150                                 | OK            |
-| 4    | depositar_cero        | 100           | 0     | Excepción, saldo=100                | OK            |
-| 5    | depositar_negativo    | 100           | -10   | Excepción, saldo=100                | OK            |
-| 6    | retirar               | 200           | 50    | 150                                 | OK            |
-| 7    | retirar_cero          | 200           | 0     | Excepción, saldo=200                | OK            |
-| 8    | retirar_negativo      | 200           | -5    | Excepción, saldo=200                | OK            |
-| 9    | retirar_mayor_saldo   | 100           | 200   | Excepción, saldo=100                | OK            |
-
-**Conclusión:**
-
-- Todos los ejercicios fueron refactorizados para manejar errores mediante excepciones y evitar interacción directa con el usuario.
-- Los tests cubren tanto casos válidos como inválidos, verificando el correcto funcionamiento y robustez ante entradas erróneas.
-- Los resultados muestran que el código es confiable y cumple con los requisitos planteados.
-
----
 
 ## Pruebas en Python
 
