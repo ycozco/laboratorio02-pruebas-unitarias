@@ -8,42 +8,133 @@
 ## Pruebas en Java
 
 ### 1. Área de un Rectángulo
-- **Archivo:** `src/Rectangulo.java`
-- **Descripción:** Clase con método estático `area(base, altura)` que retorna el área de un rectángulo.
-- **Pruebas:**
-  - **Archivo:** `tests/RectanguloTest.java`
-  - Se prueban casos con valores positivos, cero y decimales usando JUnit y Hamcrest (`assertThat`).
-  - **Ejemplo de prueba:**
-    ```java
-    assertThat(Rectangulo.area(5, 3), is(15.0));
-    assertThat(Rectangulo.area(0, 10), is(0.0));
-    assertThat(Rectangulo.area(2.5, 4), is(10.0));
-    ```
+**Código Java:**
+```java
+public class Rectangulo {
+    public static double area(double base, double altura) {
+        return base * altura;
+    }
+}
+```
+**Explicación:** Esta clase implementa un método estático que calcula el área de un rectángulo multiplicando la base por la altura.
+
+**Test Java:**
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+
+public class RectanguloTest {
+    @Test
+    public void testArea() {
+        assertThat(Rectangulo.area(5, 3), is(15.0));
+        assertThat(Rectangulo.area(0, 10), is(0.0));
+        assertThat(Rectangulo.area(2.5, 4), is(10.0));
+    }
+}
+```
+**Explicación del test:** Se prueban áreas con valores positivos, cero y decimales usando JUnit y Hamcrest.
 
 ### 2. Identificador de Números Pares e Impares
-- **Archivo:** `src/ParImpar.java`
-- **Descripción:** Clase con método estático `identificar(List<Integer>)` que retorna una lista de "Par" o "Impar" según corresponda.
-- **Pruebas:**
-  - **Archivo:** `tests/ParImparTest.java`
-  - Se prueban listas mixtas, solo pares y solo impares.
-  - **Ejemplo de prueba:**
-    ```java
-    assertThat(ParImpar.identificar(Arrays.asList(1,2,3,4,5)), is(Arrays.asList("Impar", "Par", "Impar", "Par", "Impar")));
-    ```
+**Código Java:**
+```java
+import java.util.List;
+import java.util.ArrayList;
+
+public class ParImpar {
+    public static List<String> identificar(List<Integer> numeros) {
+        List<String> resultado = new ArrayList<>();
+        for (int n : numeros) {
+            if (n % 2 == 0) {
+                resultado.add("Par");
+            } else {
+                resultado.add("Impar");
+            }
+        }
+        return resultado;
+    }
+}
+```
+**Explicación:** Esta clase recorre una lista de enteros y devuelve una lista de cadenas indicando si cada número es "Par" o "Impar".
+
+**Test Java:**
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import java.util.Arrays;
+import java.util.List;
+
+public class ParImparTest {
+    @Test
+    public void testIdentificar() {
+        List<Integer> numeros = Arrays.asList(1, 2, 3, 4, 5);
+        List<String> esperado = Arrays.asList("Impar", "Par", "Impar", "Par", "Impar");
+        assertThat(ParImpar.identificar(numeros), is(esperado));
+    }
+}
+```
+**Explicación del test:** Se prueban listas mixtas, solo pares y solo impares.
 
 ### 3. Mini Simulador de Cajero Automático (ATM)
-- **Archivo:** `src/CajeroAutomatico.java`
-- **Descripción:** Clase con métodos para depositar, retirar y consultar saldo.
-- **Pruebas:**
-  - **Archivo:** `tests/CajeroAutomaticoTest.java`
-  - Se prueban depósitos válidos e inválidos, retiros válidos, retiros mayores al saldo y retiros negativos.
-  - **Ejemplo de prueba:**
-    ```java
-    CajeroAutomatico cajero = new CajeroAutomatico(100);
-    assertThat(cajero.depositar(50), is(true));
-    assertThat(cajero.consultarSaldo(), is(150.0));
-    assertThat(cajero.depositar(-10), is(false));
-    ```
+**Código Java:**
+```java
+public class CajeroAutomatico {
+    private double saldo;
+
+    public CajeroAutomatico(double saldoInicial) {
+        this.saldo = saldoInicial;
+    }
+
+    public double consultarSaldo() {
+        return saldo;
+    }
+
+    public boolean depositar(double monto) {
+        if (monto > 0) {
+            saldo += monto;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean retirar(double monto) {
+        if (monto > 0 && monto <= saldo) {
+            saldo -= monto;
+            return true;
+        }
+        return false;
+    }
+}
+```
+**Explicación:** Esta clase simula un cajero automático con métodos para consultar saldo, depositar y retirar dinero, validando los montos.
+
+**Test Java:**
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+
+public class CajeroAutomaticoTest {
+    @Test
+    public void testDepositarYConsultarSaldo() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        assertThat(cajero.depositar(50), is(true));
+        assertThat(cajero.consultarSaldo(), is(150.0));
+        assertThat(cajero.depositar(-10), is(false));
+    }
+
+    @Test
+    public void testRetirar() {
+        CajeroAutomatico cajero = new CajeroAutomatico(200);
+        assertThat(cajero.retirar(50), is(true));
+        assertThat(cajero.consultarSaldo(), is(150.0));
+        assertThat(cajero.retirar(200), is(false));
+        assertThat(cajero.retirar(-5), is(false));
+    }
+}
+```
+**Explicación del test:** Se prueban depósitos válidos e inválidos, retiros válidos, retiros mayores al saldo y retiros negativos.
 
 ### Ejecución de pruebas Java
 - Compilar:
@@ -61,22 +152,97 @@
 ## Pruebas en Python
 
 ### 1. Área de un Rectángulo
-- **Archivo:** `python_tests/test_rectangulo.py`
-- **Descripción:** Clase `Rectangulo` con método estático `area(base, altura)`.
-- **Pruebas:**
-  - Se prueban áreas con valores positivos, cero y decimales usando `unittest`.
+**Código Python:**
+```python
+class Rectangulo:
+    @staticmethod
+    def area(base, altura):
+        return base * altura
+```
+**Explicación:** Clase con método estático que retorna el área de un rectángulo.
+
+**Test Python:**
+```python
+import unittest
+
+class TestRectangulo(unittest.TestCase):
+    def test_area(self):
+        self.assertEqual(Rectangulo.area(5, 3), 15)
+        self.assertEqual(Rectangulo.area(0, 10), 0)
+        self.assertEqual(Rectangulo.area(2.5, 4), 10)
+
+if __name__ == '__main__':
+    unittest.main()
+```
+**Explicación del test:** Se prueban áreas con valores positivos, cero y decimales usando `unittest`.
 
 ### 2. Identificador de Números Pares e Impares
-- **Archivo:** `python_tests/test_parimpar.py`
-- **Descripción:** Clase `ParImpar` con método estático `identificar(lista)`.
-- **Pruebas:**
-  - Se prueban listas mixtas, solo pares y solo impares.
+**Código Python:**
+```python
+class ParImpar:
+    @staticmethod
+    def identificar(lista):
+        return ["Par" if n % 2 == 0 else "Impar" for n in lista]
+```
+**Explicación:** Clase con método estático que identifica si los elementos de una lista son pares o impares.
+
+**Test Python:**
+```python
+import unittest
+
+class TestParImpar(unittest.TestCase):
+    def test_identificar(self):
+        self.assertEqual(ParImpar.identificar([1,2,3,4,5]), ["Impar", "Par", "Impar", "Par", "Impar"])
+        self.assertEqual(ParImpar.identificar([2,4,6]), ["Par", "Par", "Par"])
+        self.assertEqual(ParImpar.identificar([1,3,5]), ["Impar", "Impar", "Impar"])
+
+if __name__ == '__main__':
+    unittest.main()
+```
+**Explicación del test:** Se prueban listas mixtas, solo pares y solo impares.
 
 ### 3. Mini Simulador de Cajero Automático (ATM)
-- **Archivo:** `python_tests/test_cajero.py`
-- **Descripción:** Clase `CajeroAutomatico` con métodos para depositar, retirar y consultar saldo.
-- **Pruebas:**
-  - Se prueban depósitos válidos e inválidos, retiros válidos, retiros mayores al saldo y retiros negativos.
+**Código Python:**
+```python
+class CajeroAutomatico:
+    def __init__(self, saldo_inicial):
+        self.saldo = saldo_inicial
+    def consultar_saldo(self):
+        return self.saldo
+    def depositar(self, monto):
+        if monto > 0:
+            self.saldo += monto
+            return True
+        return False
+    def retirar(self, monto):
+        if monto > 0 and monto <= self.saldo:
+            self.saldo -= monto
+            return True
+        return False
+```
+**Explicación:** Clase que simula un cajero automático con métodos para consultar saldo, depositar y retirar dinero.
+
+**Test Python:**
+```python
+import unittest
+
+class TestCajeroAutomatico(unittest.TestCase):
+    def test_depositar_y_consultar_saldo(self):
+        cajero = CajeroAutomatico(100)
+        self.assertTrue(cajero.depositar(50))
+        self.assertEqual(cajero.consultar_saldo(), 150)
+        self.assertFalse(cajero.depositar(-10))
+    def test_retirar(self):
+        cajero = CajeroAutomatico(200)
+        self.assertTrue(cajero.retirar(50))
+        self.assertEqual(cajero.consultar_saldo(), 150)
+        self.assertFalse(cajero.retirar(200))
+        self.assertFalse(cajero.retirar(-5))
+
+if __name__ == '__main__':
+    unittest.main()
+```
+**Explicación del test:** Se prueban depósitos válidos e inválidos, retiros válidos, retiros mayores al saldo y retiros negativos.
 
 ### Ejecución de pruebas Python
 - Ejecutar:
