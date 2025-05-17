@@ -2,6 +2,9 @@ public class CajeroAutomatico {
     private double saldo;
 
     public CajeroAutomatico(double saldoInicial) {
+        if (saldoInicial < 0) {
+            throw new IllegalArgumentException("El saldo inicial no puede ser negativo");
+        }
         this.saldo = saldoInicial;
     }
 
@@ -9,19 +12,20 @@ public class CajeroAutomatico {
         return saldo;
     }
 
-    public boolean depositar(double monto) {
-        if (monto > 0) {
-            saldo += monto;
-            return true;
+    public void depositar(double monto) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto a depositar debe ser positivo");
         }
-        return false;
+        saldo += monto;
     }
 
-    public boolean retirar(double monto) {
-        if (monto > 0 && monto <= saldo) {
-            saldo -= monto;
-            return true;
+    public void retirar(double monto) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto a retirar debe ser positivo");
         }
-        return false;
+        if (monto > saldo) {
+            throw new IllegalArgumentException("Fondos insuficientes");
+        }
+        saldo -= monto;
     }
 }

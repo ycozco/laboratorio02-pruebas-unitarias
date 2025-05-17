@@ -5,16 +5,16 @@ class CajeroAutomatico:
         if saldo_inicial < 0:
             raise ValueError("El saldo inicial no puede ser negativo")
         self.saldo = saldo_inicial
-    def test_saldo_inicial_negativo(self):
-        with self.assertRaises(ValueError):
-            CajeroAutomatico(-100)
+
     def consultar_saldo(self):
         return self.saldo
+
     def depositar(self, monto):
         if monto <= 0:
             raise ValueError("El monto a depositar debe ser positivo")
         self.saldo += monto
         return True
+
     def retirar(self, monto):
         if monto <= 0:
             raise ValueError("El monto a retirar debe ser positivo")
@@ -22,6 +22,9 @@ class CajeroAutomatico:
             raise ValueError("Fondos insuficientes")
         self.saldo -= monto
         return True
+    def test_saldo_inicial_negativo(self):
+        with self.assertRaises(ValueError):
+            CajeroAutomatico(-100)
 
 
 class TestCajeroAutomatico(unittest.TestCase):
