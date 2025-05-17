@@ -1,3 +1,289 @@
+### Código completo Python: CajeroAutomatico y su test
+```python
+class CajeroAutomatico:
+    def __init__(self, saldo_inicial):
+        if saldo_inicial < 0:
+            raise ValueError("El saldo inicial no puede ser negativo")
+        self.saldo = saldo_inicial
+    def consultar_saldo(self):
+        return self.saldo
+    def depositar(self, monto):
+        if monto <= 0:
+            raise ValueError("El monto a depositar debe ser positivo")
+        self.saldo += monto
+        return True
+    def retirar(self, monto):
+        if monto <= 0:
+            raise ValueError("El monto a retirar debe ser positivo")
+        if monto > self.saldo:
+            raise ValueError("Fondos insuficientes")
+        self.saldo -= monto
+        return True
+
+import unittest
+
+class TestCajeroAutomatico(unittest.TestCase):
+    def test_saldo_inicial(self):
+        cajero = CajeroAutomatico(1000)
+        self.assertEqual(cajero.consultar_saldo(), 1000)
+
+    def test_saldo_inicial_negativo(self):
+        with self.assertRaises(ValueError):
+            CajeroAutomatico(-100)
+
+    def test_depositar_valido(self):
+        cajero = CajeroAutomatico(100)
+        self.assertTrue(cajero.depositar(50))
+        self.assertEqual(cajero.consultar_saldo(), 150)
+
+    def test_depositar_cero(self):
+        cajero = CajeroAutomatico(100)
+        with self.assertRaises(ValueError):
+            cajero.depositar(0)
+        self.assertEqual(cajero.consultar_saldo(), 100)
+
+    def test_depositar_negativo(self):
+        cajero = CajeroAutomatico(100)
+        with self.assertRaises(ValueError):
+            cajero.depositar(-10)
+        self.assertEqual(cajero.consultar_saldo(), 100)
+
+    def test_retirar_valido(self):
+        cajero = CajeroAutomatico(200)
+        self.assertTrue(cajero.retirar(50))
+        self.assertEqual(cajero.consultar_saldo(), 150)
+
+    def test_retirar_cero(self):
+        cajero = CajeroAutomatico(200)
+        with self.assertRaises(ValueError):
+            cajero.retirar(0)
+        self.assertEqual(cajero.consultar_saldo(), 200)
+
+    def test_retirar_negativo(self):
+        cajero = CajeroAutomatico(200)
+        with self.assertRaises(ValueError):
+            cajero.retirar(-5)
+        self.assertEqual(cajero.consultar_saldo(), 200)
+
+    def test_retirar_mayor_que_saldo(self):
+        cajero = CajeroAutomatico(100)
+        with self.assertRaises(ValueError):
+            cajero.retirar(200)
+        self.assertEqual(cajero.consultar_saldo(), 100)
+```
+
+### Código completo Java: CajeroAutomatico y su test
+```java
+public class CajeroAutomatico {
+    private double saldo;
+
+    public CajeroAutomatico(double saldoInicial) {
+        this.saldo = saldoInicial;
+    }
+
+    public double consultarSaldo() {
+        return saldo;
+    }
+
+    public boolean depositar(double monto) {
+        if (monto > 0) {
+            saldo += monto;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean retirar(double monto) {
+        if (monto > 0 && monto <= saldo) {
+            saldo -= monto;
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+
+public class CajeroAutomaticoTest {
+    @Test
+    public void testSaldoInicial() {
+        CajeroAutomatico cajero = new CajeroAutomatico(1000);
+        assertThat(cajero.consultarSaldo(), is(1000.0));
+    }
+
+    @Test
+    public void testDepositarValido() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        assertThat(cajero.depositar(50), is(true));
+        assertThat(cajero.consultarSaldo(), is(150.0));
+    }
+
+    @Test
+    public void testDepositarCero() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        assertThat(cajero.depositar(0), is(false));
+        assertThat(cajero.consultarSaldo(), is(100.0));
+    }
+
+    @Test
+    public void testDepositarNegativo() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        assertThat(cajero.depositar(-10), is(false));
+        assertThat(cajero.consultarSaldo(), is(100.0));
+    }
+
+    @Test
+    public void testRetirarValido() {
+        CajeroAutomatico cajero = new CajeroAutomatico(200);
+        assertThat(cajero.retirar(50), is(true));
+        assertThat(cajero.consultarSaldo(), is(150.0));
+    }
+
+    @Test
+    public void testRetirarCero() {
+        CajeroAutomatico cajero = new CajeroAutomatico(200);
+        assertThat(cajero.retirar(0), is(false));
+        assertThat(cajero.consultarSaldo(), is(200.0));
+    }
+
+    @Test
+    public void testRetirarNegativo() {
+        CajeroAutomatico cajero = new CajeroAutomatico(200);
+        assertThat(cajero.retirar(-5), is(false));
+        assertThat(cajero.consultarSaldo(), is(200.0));
+    }
+
+    @Test
+    public void testRetirarMayorQueSaldo() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        assertThat(cajero.retirar(200), is(false));
+        assertThat(cajero.consultarSaldo(), is(100.0));
+    }
+}
+```
+## Enfoque de pruebas unitarias en Java y Python: Casos positivos y negativos
+
+En ambos lenguajes, la lógica de negocio está separada de la interacción con el usuario. Los métodos devuelven valores o lanzan excepciones ante entradas inválidas (casos negativos), y las pruebas unitarias verifican tanto los resultados esperados como el manejo correcto de errores.
+
+### Ejemplo en Python (`Rectangulo`):
+```python
+class Rectangulo:
+    @staticmethod
+    def area(base, altura):
+        if base < 0 or altura < 0:
+            raise ValueError("Base y altura deben ser no negativas")
+        return base * altura
+
+import unittest
+
+class TestRectangulo(unittest.TestCase):
+    def test_area_positivos(self):
+        self.assertEqual(Rectangulo.area(5, 3), 15)
+        self.assertEqual(Rectangulo.area(2.5, 4), 10)
+    def test_area_cero(self):
+        self.assertEqual(Rectangulo.area(0, 10), 0)
+    def test_area_negativos(self):
+        with self.assertRaises(ValueError):
+            Rectangulo.area(-1, 5)
+        with self.assertRaises(ValueError):
+            Rectangulo.area(5, -1)
+        with self.assertRaises(ValueError):
+            Rectangulo.area(-2, -2)
+```
+
+### Ejemplo en Java (`Rectangulo`):
+```java
+public class Rectangulo {
+    public static double area(double base, double altura) {
+        if (base < 0 || altura < 0) {
+            throw new IllegalArgumentException("Base y altura deben ser no negativas");
+        }
+        return base * altura;
+    }
+}
+```
+
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+
+public class RectanguloTest {
+    @Test
+    public void testAreaEnterosPositivos() {
+        assertThat(Rectangulo.area(5, 3), is(15.0));
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAreaBaseNegativaLanzaExcepcion() {
+        Rectangulo.area(-1, 5);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAreaAlturaNegativaLanzaExcepcion() {
+        Rectangulo.area(5, -1);
+    }
+}
+```
+
+### Ejemplo en Python (`CajeroAutomatico`):
+```python
+class CajeroAutomatico:
+    def __init__(self, saldo_inicial):
+        self.saldo = saldo_inicial
+    def consultar_saldo(self):
+        return self.saldo
+    def depositar(self, monto):
+        if monto > 0:
+            self.saldo += monto
+            return True
+        return False
+    def retirar(self, monto):
+        if monto > 0 and monto <= self.saldo:
+            self.saldo -= monto
+            return True
+        return False
+
+import unittest
+
+class TestCajeroAutomatico(unittest.TestCase):
+    def test_saldo_inicial(self):
+        cajero = CajeroAutomatico(1000)
+        self.assertEqual(cajero.consultar_saldo(), 1000)
+    def test_depositar_valido(self):
+        cajero = CajeroAutomatico(100)
+        self.assertTrue(cajero.depositar(50))
+        self.assertEqual(cajero.consultar_saldo(), 150)
+    def test_depositar_cero(self):
+        cajero = CajeroAutomatico(100)
+        self.assertFalse(cajero.depositar(0))
+        self.assertEqual(cajero.consultar_saldo(), 100)
+    def test_depositar_negativo(self):
+        cajero = CajeroAutomatico(100)
+        self.assertFalse(cajero.depositar(-10))
+        self.assertEqual(cajero.consultar_saldo(), 100)
+    def test_retirar_valido(self):
+        cajero = CajeroAutomatico(200)
+        self.assertTrue(cajero.retirar(50))
+        self.assertEqual(cajero.consultar_saldo(), 150)
+    def test_retirar_cero(self):
+        cajero = CajeroAutomatico(200)
+        self.assertFalse(cajero.retirar(0))
+        self.assertEqual(cajero.consultar_saldo(), 200)
+    def test_retirar_negativo(self):
+        cajero = CajeroAutomatico(200)
+        self.assertFalse(cajero.retirar(-5))
+        self.assertEqual(cajero.consultar_saldo(), 200)
+    def test_retirar_mayor_que_saldo(self):
+        cajero = CajeroAutomatico(100)
+        self.assertFalse(cajero.retirar(200))
+        self.assertEqual(cajero.consultar_saldo(), 100)
+```
+
+**Conclusión:**
+Las pruebas unitarias en ambos lenguajes cubren tanto los casos positivos (funcionamiento esperado) como los negativos (errores, límites, entradas inválidas), asegurando robustez y calidad en el código.
 # Informe de Pruebas Unitarias - Laboratorio 02
 
 **Autor:** Yoset Cozco Mauri  
