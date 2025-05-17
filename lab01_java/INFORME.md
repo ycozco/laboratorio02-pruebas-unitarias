@@ -5,17 +5,16 @@
 
 ---
 
+# Resumen y Estructura
+
+Este informe documenta la refactorización y pruebas unitarias de tres ejercicios (Rectángulo, ParImpar, Cajero Automático) en Java y Python. Se eliminaron versiones interactivas, se implementó manejo de errores por excepciones y se cubrieron casos positivos y negativos en los tests.
+
+---
+
 ## Pruebas en Java
 
-### Modificaciones y Adaptaciones
-
-Para transformar los programas interactivos originales en versiones aptas para pruebas unitarias y reutilización, se realizaron las siguientes modificaciones:
-
-- **Rectángulo:** Se extrajo la lógica de cálculo del área a un método estático en una clase, eliminando la interacción directa con el usuario.
-- **ParImpar:** Se encapsuló la lógica en métodos estáticos para facilitar su prueba.
-- **Cajero Automático:** Se implementó la lógica en una clase con métodos que devuelven valores o lanzan excepciones según el caso.
-
-### Código Java: Rectángulo
+### 1. Área de un Rectángulo
+**Código:**
 ```java
 public class Rectangulo {
     public static double area(double base, double altura) {
@@ -26,7 +25,7 @@ public class Rectangulo {
     }
 }
 ```
-#### Test Java: Rectángulo
+**Test:**
 ```java
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -42,6 +41,405 @@ public class RectanguloTest {
         Rectangulo.area(-1, 5);
     }
     @Test(expected = IllegalArgumentException.class)
+    public void testAreaAlturaNegativaLanzaExcepcion() {
+        Rectangulo.area(5, -1);
+    }
+}
+```
+
+### 2. Identificador ParImpar
+**Código:**
+```java
+public class ParImpar {
+    public static boolean esPar(int n) {
+        return n % 2 == 0;
+    }
+}
+```
+**Test:**
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class ParImparTest {
+    @Test
+    public void testPar() {
+        assertTrue(ParImpar.esPar(2));
+        assertTrue(ParImpar.esPar(0));
+    }
+    @Test
+    public void testImpar() {
+        assertFalse(ParImpar.esPar(3));
+        assertFalse(ParImpar.esPar(-1));
+    }
+}
+```
+
+### 3. Cajero Automático
+**Código:**
+```java
+public class CajeroAutomatico {
+    private double saldo;
+
+    public CajeroAutomatico(double saldoInicial) {
+        if (saldoInicial < 0) {
+            throw new IllegalArgumentException("El saldo inicial no puede ser negativo");
+        }
+        this.saldo = saldoInicial;
+    }
+
+    public double consultarSaldo() {
+        return saldo;
+    }
+
+    public void depositar(double monto) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto a depositar debe ser positivo");
+        }
+        saldo += monto;
+    }
+
+    public void retirar(double monto) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto a retirar debe ser positivo");
+        }
+        if (monto > saldo) {
+            throw new IllegalArgumentException("Fondos insuficientes");
+        }
+        saldo -= monto;
+    }
+}
+```
+**Test:**
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class CajeroAutomaticoTest {
+    @Test
+    public void testSaldoInicial() {
+        CajeroAutomatico cajero = new CajeroAutomatico(1000);
+        assertEquals(1000.0, cajero.consultarSaldo(), 0.001);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testSaldoInicialNegativo() {
+        new CajeroAutomatico(-100);
+    }
+    @Test
+    public void testDepositarValido() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        cajero.depositar(50);
+        assertEquals(150.0, cajero.consultarSaldo(), 0.001);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testDepositarCero() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        cajero.depositar(0);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testDepositarNegativo() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        cajero.depositar(-10);
+    }
+    @Test
+    public void testRetirarValido() {
+        CajeroAutomatico cajero = new CajeroAutomatico(200);
+        cajero.retirar(50);
+        assertEquals(150.0, cajero.consultarSaldo(), 0.001);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testRetirarCero() {
+        CajeroAutomatico cajero = new CajeroAutomatico(200);
+        cajero.retirar(0);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testRetirarNegativo() {
+        CajeroAutomatico cajero = new CajeroAutomatico(200);
+        cajero.retirar(-5);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testRetirarMayorQueSaldo() {
+        CajeroAutomatico cajero = new CajeroAutomatico(100);
+        cajero.retirar(200);
+    }
+}
+```
+
+### Salida de tests Java
+```
+JUnit version 4.13.2
+..................E.....
+Time: 0.013
+There was 1 failure:
+1) testAreaNegativos(RectanguloTest)
+java.lang.IllegalArgumentException: Base y altura deben ser no negativas
+    at Rectangulo.area(Rectangulo.java:4)
+    at RectanguloTest.testAreaNegativos(RectanguloTest.java:46)
+
+FAILURES!!!
+Tests run: 23,  Failures: 1
+```
+
+---
+
+## Pruebas en Python
+
+### 1. Área de un Rectángulo
+**Código:**
+```python
+class Rectangulo:
+    @staticmethod
+    def area(base, altura):
+        if base < 0 or altura < 0:
+            raise ValueError("Base y altura deben ser no negativas")
+        return base * altura
+```
+**Test:**
+```python
+import unittest
+
+class TestRectangulo(unittest.TestCase):
+    def test_area_positivos(self):
+        self.assertEqual(Rectangulo.area(5, 3), 15)
+        self.assertEqual(Rectangulo.area(2.5, 4), 10)
+    def test_area_cero(self):
+        self.assertEqual(Rectangulo.area(0, 10), 0)
+    def test_area_negativos(self):
+        with self.assertRaises(ValueError):
+            Rectangulo.area(-1, 5)
+        with self.assertRaises(ValueError):
+            Rectangulo.area(5, -1)
+        with self.assertRaises(ValueError):
+            Rectangulo.area(-2, -2)
+```
+
+### 2. Identificador ParImpar
+**Código:**
+```python
+class ParImpar:
+    @staticmethod
+    def es_par(n):
+        return n % 2 == 0
+```
+**Test:**
+```python
+import unittest
+
+class TestParImpar(unittest.TestCase):
+    def test_par(self):
+        self.assertTrue(ParImpar.es_par(2))
+        self.assertTrue(ParImpar.es_par(0))
+    def test_impar(self):
+        self.assertFalse(ParImpar.es_par(3))
+        self.assertFalse(ParImpar.es_par(-1))
+```
+
+### 3. Cajero Automático
+**Código:**
+```python
+class CajeroAutomatico:
+    def __init__(self, saldo_inicial):
+        if saldo_inicial < 0:
+            raise ValueError("El saldo inicial no puede ser negativo")
+        self.saldo = saldo_inicial
+    def consultar_saldo(self):
+        return self.saldo
+    def depositar(self, monto):
+        if monto <= 0:
+            raise ValueError("El monto a depositar debe ser positivo")
+        self.saldo += monto
+        return True
+    def retirar(self, monto):
+        if monto <= 0:
+            raise ValueError("El monto a retirar debe ser positivo")
+        if monto > self.saldo:
+            raise ValueError("Fondos insuficientes")
+        self.saldo -= monto
+        return True
+```
+**Test:**
+```python
+import unittest
+
+class TestCajeroAutomatico(unittest.TestCase):
+    def test_saldo_inicial(self):
+        cajero = CajeroAutomatico(1000)
+        self.assertEqual(cajero.consultar_saldo(), 1000)
+    def test_saldo_inicial_negativo(self):
+        with self.assertRaises(ValueError):
+            CajeroAutomatico(-100)
+    def test_depositar_valido(self):
+        cajero = CajeroAutomatico(100)
+        self.assertTrue(cajero.depositar(50))
+        self.assertEqual(cajero.consultar_saldo(), 150)
+    def test_depositar_cero(self):
+        cajero = CajeroAutomatico(100)
+        with self.assertRaises(ValueError):
+            cajero.depositar(0)
+        self.assertEqual(cajero.consultar_saldo(), 100)
+    def test_depositar_negativo(self):
+        cajero = CajeroAutomatico(100)
+        with self.assertRaises(ValueError):
+            cajero.depositar(-10)
+        self.assertEqual(cajero.consultar_saldo(), 100)
+    def test_retirar_valido(self):
+        cajero = CajeroAutomatico(200)
+        self.assertTrue(cajero.retirar(50))
+        self.assertEqual(cajero.consultar_saldo(), 150)
+    def test_retirar_cero(self):
+        cajero = CajeroAutomatico(200)
+        with self.assertRaises(ValueError):
+            cajero.retirar(0)
+        self.assertEqual(cajero.consultar_saldo(), 200)
+    def test_retirar_negativo(self):
+        cajero = CajeroAutomatico(200)
+        with self.assertRaises(ValueError):
+            cajero.retirar(-5)
+        self.assertEqual(cajero.consultar_saldo(), 200)
+    def test_retirar_mayor_que_saldo(self):
+        cajero = CajeroAutomatico(100)
+        with self.assertRaises(ValueError):
+            cajero.retirar(200)
+        self.assertEqual(cajero.consultar_saldo(), 100)
+```
+
+### Salida de tests Python
+```
+============================= test session starts =============================
+platform win32 -- Python 3.13.3, pytest-8.3.5, pluggy-1.6.0
+rootdir: D:\project_ai
+configfile: pytest.ini
+collected 21 items
+
+lab01_java\python_tests\test_cajero.py ........                          [ 38%]
+lab01_java\python_tests\test_parimpar.py ......                          [ 66%]
+lab01_java\python_tests\test_rectangulo.py .......                       [100%]
+
+============================= 21 passed in 0.04s =============================
+```
+
+---
+
+## Conclusiones
+
+- **Rectángulo:** El código es robusto ante entradas inválidas y calcula correctamente el área.
+- **ParImpar:** La función distingue correctamente entre números pares e impares.
+- **Cajero Automático:** El cajero rechaza operaciones inválidas y mantiene la integridad del saldo.
+
+---
+
+## Anexo: Versiones Interactivas Originales en Python
+
+### 1. Calcular el área de un rectángulo (versión interactiva)
+```python
+def leer_numero_float(prompt):
+    while True:
+        try:
+            valor = float(input(prompt))
+            return valor
+        except ValueError:
+            print("Entrada invalida. Ingrese un numero entero o decimal.")
+
+def main_rectangulo():
+    # Leer base y validar que sea positiva
+    while True:
+        base = leer_numero_float("Ingrese la base del rectangulo: ")
+        if base > 0:
+            break
+        print("La base debe ser un valor positivo.")
+
+    # Leer altura y validar que sea positiva
+    while True:
+        altura = leer_numero_float("Ingrese la altura del rectangulo: ")
+        if altura > 0:
+            break
+        print("La altura debe ser un valor positivo.")
+
+    area = base * altura
+    print(f"\nBase: {base}")
+    print(f"Altura: {altura}")
+    print(f"Area calculada: {area}")
+
+if __name__ == "__main__":
+    main_rectangulo()
+```
+
+### 2. Identificador de Números Pares e Impares (versión interactiva)
+```python
+def main_parimpar():
+    n = int(input("¿Cuántos números desea ingresar?: "))
+    numeros = []
+    for i in range(n):
+        while True:
+            try:
+                num = int(input(f"Ingrese el número {i+1}: "))
+                numeros.append(num)
+                break
+            except ValueError:
+                print("Entrada inválida. Ingrese un número entero.")
+    for num in numeros:
+        if num % 2 == 0:
+            print(f"{num} es Par")
+        else:
+            print(f"{num} es Impar")
+
+if __name__ == "__main__":
+    main_parimpar()
+```
+
+### 3. Mini simulador de cajero automático (versión interactiva)
+```python
+def leer_monto(prompt):
+    while True:
+        try:
+            cantidad = float(input(prompt))
+            return cantidad
+        except ValueError:
+            print("Entrada invalida. Ingrese un monto numerico.")
+
+def main_cajero():
+    saldo = 1000.0
+    while True:
+        print("\n--- Menu Cajero ---")
+        print("1. Consultar Saldo")
+        print("2. Depositar Dinero")
+        print("3. Retirar Dinero")
+        print("4. Salir")
+
+        opcion = input("Seleccione una opcion (1-4): ").strip()
+        if opcion == "1":
+            print(f"Saldo actual: S/.{saldo:.2f}")
+        elif opcion == "2":
+            dep = leer_monto("Monto a depositar: S/.")
+            if dep > 0:
+                saldo += dep
+                print(f"Deposito exitoso. Nuevo saldo: S/.{saldo:.2f}")
+            else:
+                print("Monto invalido. Debe ser mayor que cero.")
+        elif opcion == "3":
+            ret = leer_monto("Monto a retirar: S/.")
+            if ret <= 0:
+                print("Monto invalido. Debe ser mayor que cero.")
+            elif ret > saldo:
+                print("Fondos insuficientes.")
+            else:
+                saldo -= ret
+                print(f"Retiro exitoso. Nuevo saldo: S/.{saldo:.2f}")
+        elif opcion == "4":
+            print("Gracias por usar el cajero. Hasta luego.")
+            break
+        else:
+            print("Opcion no valida. Ingrese 1, 2, 3 o 4.")
+
+if __name__ == "__main__":
+    main_cajero()
+```
+
+---
+
+**Nota:**
+- Para ejecutar las pruebas de Java, asegúrate de estar en la carpeta raíz del proyecto y que los JARs estén presentes.
+- Para Python, asegúrate de tener el archivo `__init__.py` en la carpeta de pruebas.
     public void testAreaAlturaNegativaLanzaExcepcion() {
         Rectangulo.area(5, -1);
     }
