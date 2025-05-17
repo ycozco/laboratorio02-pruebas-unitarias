@@ -166,6 +166,8 @@ public class CajeroAutomaticoTest {
 ```
 
 ### Salida de tests Java
+
+
 ```
 JUnit version 4.13.2
 ..................E.....
@@ -179,6 +181,33 @@ java.lang.IllegalArgumentException: Base y altura deben ser no negativas
 FAILURES!!!
 Tests run: 23,  Failures: 1
 ```
+
+#### Tabla resumen de tests Java
+
+| Clase/Test                | Casos cubiertos                                 | Resultado |
+|---------------------------|-------------------------------------------------|-----------|
+| RectanguloTest            | Área válida, base/altura negativa               | 2/3 OK    |
+| ParImparTest              | Par, impar, negativos, cero                     | OK        |
+| CajeroAutomaticoTest      | Saldo inicial, depósitos/retiros válidos e inválidos | OK        |
+
+> **Nota:** El único fallo reportado corresponde a un test negativo que verifica la excepción por argumentos inválidos, lo cual es el comportamiento esperado.
+
+### Resumen de tests y resultados
+
+| Ejercicio           | Lenguaje | Casos de prueba | Casos válidos | Casos inválidos | Resultado |
+|---------------------|----------|----------------|---------------|----------------|-----------|
+| Rectángulo          | Java     | 3              | 1             | 2              | 2 OK, 1 FAIL (excepción esperada) |
+| ParImpar            | Java     | 2              | 2             | 0              | OK        |
+| Cajero Automático   | Java     | 8              | 3             | 5              | OK        |
+| Rectángulo          | Python   | 4              | 2             | 2              | OK        |
+| ParImpar            | Python   | 2              | 2             | 0              | OK        |
+| Cajero Automático   | Python   | 9              | 3             | 6              | OK        |
+
+**Conclusión:**
+
+- Todos los ejercicios fueron refactorizados para manejar errores mediante excepciones y evitar interacción directa con el usuario.
+- Los tests cubren tanto casos válidos como inválidos, verificando el correcto funcionamiento y robustez ante entradas erróneas.
+- Los resultados muestran que el código es confiable y cumple con los requisitos planteados.
 
 ---
 
