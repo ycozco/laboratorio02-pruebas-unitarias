@@ -7,6 +7,16 @@
 
 ## Pruebas en Java
 
+### Modificaciones y Adaptaciones
+
+Para transformar los programas interactivos originales en versiones aptas para pruebas unitarias y reutilización, se realizaron las siguientes modificaciones:
+
+- **Rectángulo:** Se extrajo la lógica de cálculo del área a un método estático en una clase, eliminando la interacción directa con el usuario.
+- **ParImpar:** Se encapsuló la lógica de identificación de paridad en un método estático que recibe una lista, en vez de leer valores uno a uno.
+- **Cajero Automático:** Se encapsuló el estado y las operaciones en una clase, separando la lógica de negocio de la interacción por consola.
+
+Estas adaptaciones permiten probar la lógica de manera automática y reutilizar el código en otros contextos.
+
 ### 1. Área de un Rectángulo
 **Código Java:**
 ```java
@@ -151,6 +161,16 @@ public class CajeroAutomaticoTest {
 
 ## Pruebas en Python
 
+### Modificaciones y Adaptaciones
+
+Al igual que en Java, los programas interactivos originales en Python fueron refactorizados:
+
+- **Rectángulo:** La función de cálculo de área se convirtió en un método estático dentro de una clase, eliminando la entrada por teclado.
+- **ParImpar:** La lógica de paridad se encapsuló en un método estático que opera sobre listas.
+- **Cajero Automático:** Se creó una clase que mantiene el saldo y expone métodos para depositar, retirar y consultar, facilitando la prueba unitaria.
+
+Estas modificaciones permiten separar la lógica de negocio de la interacción con el usuario y facilitan la automatización de pruebas.
+
 ### 1. Área de un Rectángulo
 **Código Python:**
 ```python
@@ -276,6 +296,138 @@ unittest
 ```
 
 ---
+
+## Anexo: Programas Interactivos Originales en Python
+
+### 1. Calcular el área de un rectángulo (versión interactiva)
+
+**Enunciado:**
+Escribe un programa que solicite al usuario ingresar la base y la altura de un rectángulo como números enteros o decimales. El programa debe calcular el área del rectángulo (Área = base * altura) e imprimir el resultado mostrando claramente cuál es la base, la altura y el área calculada.
+
+**Código original:**
+```python
+def leer_numero_float(prompt):
+    while True:
+        try:
+            valor = float(input(prompt))
+            return valor
+        except ValueError:
+            print("Entrada invalida. Ingrese un numero entero o decimal.")
+
+def main_rectangulo():
+    # Leer base y validar que sea positiva
+    while True:
+        base = leer_numero_float("Ingrese la base del rectangulo: ")
+        if base > 0:
+            break
+        print("La base debe ser un valor positivo.")
+
+    # Leer altura y validar que sea positiva
+    while True:
+        altura = leer_numero_float("Ingrese la altura del rectangulo: ")
+        if altura > 0:
+            break
+        print("La altura debe ser un valor positivo.")
+
+    area = base * altura
+    print(f"\nBase: {base}")
+    print(f"Altura: {altura}")
+    print(f"Area calculada: {area}")
+
+if __name__ == "__main__":
+    main_rectangulo()
+```
+**Explicación:**
+Este programa interactivo solicita al usuario la base y la altura, valida que sean positivas y muestra el área calculada. Para pruebas unitarias, la lógica de cálculo se separó en una clase/método independiente.
+
+---
+
+### 2. Identificador de Números Pares e Impares (versión interactiva)
+
+**Enunciado:**
+Solicita al usuario una lista de números y muestra para cada uno si es par o impar.
+
+**Código original:**
+```python
+def main_parimpar():
+    n = int(input("¿Cuántos números desea ingresar?: "))
+    numeros = []
+    for i in range(n):
+        while True:
+            try:
+                num = int(input(f"Ingrese el número {i+1}: "))
+                numeros.append(num)
+                break
+            except ValueError:
+                print("Entrada inválida. Ingrese un número entero.")
+    for num in numeros:
+        if num % 2 == 0:
+            print(f"{num} es Par")
+        else:
+            print(f"{num} es Impar")
+
+if __name__ == "__main__":
+    main_parimpar()
+```
+**Explicación:**
+El programa solicita una cantidad de números, los lee y muestra si cada uno es par o impar. Para pruebas unitarias, la lógica se encapsuló en un método que opera sobre listas.
+
+---
+
+### 3. Mini simulador de cajero automático (versión interactiva)
+
+**Enunciado:**
+Desarrolla un programa que simule las operaciones básicas de un cajero automático. El programa debe iniciar con un saldo fijo (por ejemplo, S/.1,000). Debe presentar un menú al usuario con las siguientes opciones: 1. Consultar Saldo 2. Depositar Dinero 3. Retirar Dinero 4. Salir. El menú debe mostrarse repetidamente hasta que el usuario elija la opción "Salir".
+
+**Código original:**
+```python
+def leer_monto(prompt):
+    while True:
+        try:
+            cantidad = float(input(prompt))
+            return cantidad
+        except ValueError:
+            print("Entrada invalida. Ingrese un monto numerico.")
+
+def main_cajero():
+    saldo = 1000.0
+    while True:
+        print("\n--- Menu Cajero ---")
+        print("1. Consultar Saldo")
+        print("2. Depositar Dinero")
+        print("3. Retirar Dinero")
+        print("4. Salir")
+
+        opcion = input("Seleccione una opcion (1-4): ").strip()
+        if opcion == "1":
+            print(f"Saldo actual: S/.{saldo:.2f}")
+        elif opcion == "2":
+            dep = leer_monto("Monto a depositar: S/.")
+            if dep > 0:
+                saldo += dep
+                print(f"Deposito exitoso. Nuevo saldo: S/.{saldo:.2f}")
+            else:
+                print("Monto invalido. Debe ser mayor que cero.")
+        elif opcion == "3":
+            ret = leer_monto("Monto a retirar: S/.")
+            if ret <= 0:
+                print("Monto invalido. Debe ser mayor que cero.")
+            elif ret > saldo:
+                print("Fondos insuficientes.")
+            else:
+                saldo -= ret
+                print(f"Retiro exitoso. Nuevo saldo: S/.{saldo:.2f}")
+        elif opcion == "4":
+            print("Gracias por usar el cajero. Hasta luego.")
+            break
+        else:
+            print("Opcion no valida. Ingrese 1, 2, 3 o 4.")
+
+if __name__ == "__main__":
+    main_cajero()
+```
+**Explicación:**
+Este programa interactivo permite consultar saldo, depositar y retirar dinero, validando los montos y mostrando un menú repetitivo. Para pruebas unitarias, la lógica se encapsuló en una clase con métodos independientes.
 
 **Nota:**
 - Para ejecutar las pruebas de Java, asegúrate de estar en la carpeta raíz del proyecto y que los JARs estén presentes.
