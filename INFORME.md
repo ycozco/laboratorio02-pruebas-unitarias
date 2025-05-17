@@ -328,6 +328,22 @@ lab01_java\python_tests\test_rectangulo.py .......                       [100%]
 
 ---
 
+
 **Nota:**
-- Para ejecutar las pruebas de Java, asegúrate de estar en la carpeta raíz del proyecto y que los JARs estén presentes.
-- Para Python, asegúrate de tener el archivo `__init__.py` en la carpeta de pruebas.
+
+Para ejecutar los tests de **Java**:
+1. Compila los archivos `.java` en `src/` y `tests/` asegurando que los `.jar` estén presentes.
+2. Ejecuta los tests con JUnit.
+
+Para ejecutar los tests de **Python**:
+1. Instala pytest si no está instalado:
+   ```bash
+   pip install pytest
+   ```
+2. Ejecuta los tests desde la raíz del proyecto:
+   ```bash
+   pytest
+   ```
+
+---
+
